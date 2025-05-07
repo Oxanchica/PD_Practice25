@@ -1,0 +1,78 @@
+<html>
+<head><link rel="icon" href="images\Центр ПД icon.ico" type="image/x-icon">
+<title>
+Совершенствование цифровой инфраструктуры ПД
+</title>
+</head>
+
+<body>
+<img src="images\Центр ПД.jpg" alt="Центр проектной деятельности"/>
+<div style="margin-left:25px; margin-right:20px;">
+<h2><center>Туториал по созданию текстового редактора</center></h2>
+<p>Данное руководство предусматривает реализацию простейшего текстового редактора на Python, поэтому перед началом работы стоит ознакомиться с базовыми методами работы в Python:</p>
+<ul><li>Операции сравнения и присваивания.
+<li>Ветвление: оператор if.
+<li>Описание функции: def.
+<li>Импорт библиотек и работа с ними.</ul>
+<p>А также рекомендуется ознакомиться с библиотекой tkinter, а особенно с tkinter.filedialog и методом .grid(), т.к. они будут использованы в коде.</p>
+<p>Итак, начнём написание кода. Сперва экспортируем библиотеки:</p>
+<p><blockquote><tt>from tkinter import *<br>
+import tkinter.filedialog</tt></blockquote></p>
+<p>Теперь создадим окно, в котором мы будем работать с текстом:</p>
+<p><blockquote><tt>root=Tk("Text Editor")<br>
+text=Text(root)<br>
+text.grid()</blockquote></tt></p>
+<p>В конце программы окно надо будет закрыть. Весь остальной код будет располагаться в программе ДО строчки с закрытием окна, но напишем её сейчас, чтобы промежуточных запусках (пока редактор написан не полностью) программа корректно работала:</p>
+<p><blockquote><tt>root.mainloop()</tt></blockquote></p>
+<p>Если вы сейчас запустите код, то увидите примерно следующее:</p>
+<img src="images/Создание окна.png" alt="Создание окна">
+<p>Итак, окно редактора у нас есть, но нам нужно будет куда-то сохранять прогресс. Для этого пропишем функцию saveas() после импорта библиотек. Её также можно прописать внутри вызова окна или в конце кода, но для лучшей читаемости кода напишем её после импорта:</p>
+<p><blockquote><tt>def saveas():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;global text<br>
+&nbsp;&nbsp;&nbsp;&nbsp;t = text.get("1.0", "end-1c")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;savelocation=tkinter.filedialog.asksaveasfilename()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;if (savelocation != ''):#Модификация проекта - обработка ошибок.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file1=open(savelocation, "w+")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file1.write(t)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;file1.close()</tt></blockquote></p>
+<p>Будем вызывать эту функцию с помощью кнопки. В коде она будет располагаться после text.grid():</p>
+<p><blockquote><tt>saveButton=Button(root, text="Save", command=saveas)<br>
+saveButton.grid()</tt></blockquote></p>
+<p>Теперь наше окно выглядит так:</p>
+<img src="images/Интерфейс сохранения.png" alt="Интерфейс сохранения">
+<p>Если нажать на Save, то всплывёт меню сохранения, которое предложит выбрать каталог для сохранения и существующий файл или создать новый:</p>
+<img src="images/Работа сохранения.png" alt="Работа сохранения">
+<p>Теперь создадим возможность писать текст разным шрифтом. Для этого пропишем в начале ещё 2 функции:</p>
+<p><blockquote><tt>def FontCourier():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;text.config(font=("Courier", 12))<br>
+def FontHelvetica():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;text.config(font=("Helvetica", 12))</tt></blockquote></p>
+<p>Теперь создадим меню для выбора шрифта и добавим туда наши шрифты. Пропишем его после метода saveButton.grid():</p>
+<p><blockquote><tt>font=Menubutton(root, text="Font")<br>
+font.grid()<br>
+font.menu=Menu(font, tearoff=0)<br>
+font["menu"]=font.menu<br>
+helvetica=IntVar()<br>
+courier=IntVar()<br>
+font.menu.add_checkbutton(label="Courier", variable=courier, command=FontCourier)<br>
+font.menu.add_checkbutton(label="Helvetica", variable=helvetica, command=FontHelvetica)</tt></blockquote></p>
+<p>1 из шрифтов и меню их выбора теперь выглядят так:</p>
+<img src="images/Работа шрифтов.png" alt="Текст в helvetica">
+
+<h3><center>В общем, редактор готов, но мне захотелось сделать ещё кое-какие улучшения:</center></h3>
+<h4>Создание заголовка окна.</h4>
+<p>Для этого после инициализации переменной root (1 строка создания окна) установим для созданного окна заголовок:</p>
+<p><tt>root.title("Text editor")</tt></p>
+<h4>Добавление жирных шрифтов.</h4>
+<p>Для этого после основных функций, описывающих шрифты, пропишем ещё 2 функции:</p>
+<p><tt>def FontBoldHelvetica():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;text.config(font=("Helvetica", 12, "bold"))<br>
+def FontBoldCourier():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;text.config(font=("Courier", 12, "bold"))</tt></p>
+<p>И вызовем их после вызова основных шрифтов:</p>
+<p><tt>boldHelvetica=IntVar()<br>
+boldCourier=IntVar()<br>
+font.menu.add_checkbutton(label="Bold Helvetica", variable=boldHelvetica, command=FontBoldHelvetica)<br>
+font.menu.add_checkbutton(label="Bold Courier", variable=boldCourier, command=FontBoldCourier)</tt></p>
+<h3><center>На этом всё! Спасибо за внимание!</center></h3>
+</div></body></html>
